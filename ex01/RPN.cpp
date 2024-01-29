@@ -42,35 +42,25 @@ int RPN::operation(int num1, int num2, std::string const& oper)
 
 int RPN::result(std::string const& expression)
 {
-    size_t i = 0;
-
-    while(i < expression.length())
+    std::istringstream iss(expression);
+    std::string token;
+    while(iss >> token)
     {
-        if (isspace(expression[i]))
-        {
-            i++;
-            continue;
-        }
-        if (std::isdigit(expression[i]) || (expression[i] == '-' && std::isdigit(expression[i + 1])))
-        {
-            size_t j = i;
-            while (j < expression.length() && (std::isdigit(expression[j]) || (expression[j] == '-')))
-                j++;
-            std::string numStr = expression.substr(i, j - 1);
-            i = j;
-            pile.push(std::stoi(numStr));
-        }
-        else if (expression[i] == '+' || expression[i] == '-' || expression[i] == '*' || expression[i] == '/')
+        if (std::isdigit(token[0]))
+            pile.push(std::atoi(token.c_str()));
+        else if (token == "+" || token == "-" || token == "*" || token == "/")
         {
             if (pile.size() < 2)
                 throw invalidExpression();
-        
-            int num2 = pile.top();
-            pile.pop();
-            int num1 = pile.top();
-            pile.pop();
-            int result = operation(num1, num2, std::string(1, expression[i]));
-            pile.push(result);
+            else
+            {
+                int num2 = pile.top();
+                pile.pop();
+                int num1 = pile.top();
+                pile.pop();
+                int result = operation(num1, num2, token);
+                pile.push(result);
+            }
         }
         else
             throw invalidOperator();

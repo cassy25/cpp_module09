@@ -5,6 +5,7 @@
 #include <string>
 #include <iomanip>
 #include <stack>
+#include <stdexcept>
 
 class RPN
 {
