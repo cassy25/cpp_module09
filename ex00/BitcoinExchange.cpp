@@ -17,6 +17,7 @@ BitcoinExchange::BitcoinExchange(BitcoinExchange const& copy)
 
 BitcoinExchange& BitcoinExchange::operator=(BitcoinExchange const& copy)
 {
+    (void) copy;
     return (*this);
 }
 
@@ -31,9 +32,7 @@ void BitcoinExchange::fileCsv(std::string const& nameFile)
 
     //Lire chaque ligne et inserer les donnees dans la map
     while (std::getline(file, line))
-    {
        parseAndInsert(line);
-    }
 }
 
 //Recuperer les informations de date et de valeur dans la ligne et l'ajouter dans la map
@@ -62,40 +61,7 @@ void BitcoinExchange::check(std::string const& nameInput)
     std::getline(file, line);
 
     while(std::getline(file, line))
-    {
         processLine(line);
-
-
-        /*if (!std::isdigit(line[0]))
-            continue;
-        std::istringstream iss(line);
-        std::string date;
-        float value;
-        if (value < 0 || value > 1000 )
-        {
-            std::cerr << "Value is too low or too high" << std::endl;
-            return ;
-        }
-        if (!checkValidDate(date))
-            return ;
-        if (!(iss >> date) || (iss.get() != '|') || !(iss >> value))
-        {
-            std::map<std::string, float>::const_iterator it = data.find(date);
-            //La date est trouvé
-            if (it != data.end())
-            {
-                float result = it->second;
-                std::cout << date << " => " << value << " = " << result << std::endl;
-            }
-            //La date n'est pas trouvé
-            else
-            {
-                std::string nearestDate = findNearestDate(date);
-                float result = data[nearestDate];
-                std::cout << date << " => " << value << " = " << result << std::endl;
-            }
-        }*/
-    }
 }
 
 void BitcoinExchange::processLine(std::string const& line)
@@ -116,12 +82,11 @@ void BitcoinExchange::processLine(std::string const& line)
             if (checkValidDate() == 1)
                 std::cout << line.substr(0, 10) << std::endl;
             else
-            {
-                std::cout << _date;
-                checkAll();
-            }
+                checkAll(line);
         }
     }
+    else if (checkValidDate() == 1)
+        std::cout << line.substr(0, 10) << std::endl;
     else
         std::cerr << "Error : no value" << std::endl;
 }
@@ -134,7 +99,7 @@ int BitcoinExchange::isvalidValue(float value)
         std::cerr << "Error : Value doesn't be negative" << std::endl;
         return (-1);
     }
-    else if (value > 2147483647.0)
+    else if (value > 1000)
     {
         std::cerr << "Error : Value is too high" << std::endl;
         return (-1);
@@ -166,7 +131,7 @@ int BitcoinExchange::checkValidDate()
 }
 
 //Verification si on tombe sur la date et resultat
-void BitcoinExchange::checkAll()
+void BitcoinExchange::checkAll(std::string const& line)
 {
     int dateText = std::atoi(_date.c_str());
     float valueText = std::atof(_value.c_str());
@@ -176,16 +141,20 @@ void BitcoinExchange::checkAll()
 
     while (it != ite) 
     {
-        if (dateText == it->first || (dateText > it->first && ++it == ite)) 
+        //La date est trouve
+        if (dateText == it->first) 
         {
             float value = valueText * it->second;
+            std::cout << line.substr(0, 10);
             std::cout << " => " << _value << " = " << std::fixed << std::setprecision(2) << value << std::endl;
             break;
         }
+        //On pointe l'iterateur sur la date precedente
         else if (dateText < it->first) 
         {
             --it;
             float value = valueText * it->second;
+            std::cout << line.substr(0, 10);
             std::cout << " => " << _value << " = " << std::fixed << std::setprecision(2) << value << std::endl;
             break;
         }

@@ -5,6 +5,8 @@
 #include <string>
 #include <fstream>
 #include <iomanip>
+#include <stdlib.h>
+
 #include <map>
 
 class BitcoinExchange
@@ -21,7 +23,7 @@ class BitcoinExchange
         void parseAndInsert(std::string const& line);
         void processLine(std::string const& line);
         int isvalidValue(float value);
-        void checkAll();
+        void checkAll(std::string const& line);
     private:
         std::map<int, float> data;
         std::string _year;
