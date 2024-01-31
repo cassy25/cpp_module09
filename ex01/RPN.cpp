@@ -17,12 +17,12 @@ RPN::RPN(RPN const& copy)
 
 RPN& RPN::operator=(RPN const& copy)
 {
+    (void) copy;
     return *this;
 }
 
 int RPN::operation(int num1, int num2, std::string const& oper)
 {
-    int result = 0;
     if (oper == "+")
         return num1 + num2;
     else if (oper == "-")
