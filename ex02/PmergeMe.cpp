@@ -17,6 +17,9 @@ PmergeMe::PmergeMe(PmergeMe const& copy)
 
 PmergeMe& PmergeMe::operator=(PmergeMe const& copy)
 {
+    sequence = copy.sequence;
+    sequenceList = copy.sequenceList;
+
     return *this;
 }
 
@@ -29,7 +32,7 @@ void PmergeMe::mergeSortVector()
         return ;
     }
 
-    mergeSortVectorHelper(0, sequence.size());
+    mergeSortVectorHelper(sequence.begin(), sequence.end());
 }
 
 // Tri par fusion-insertion (Ford-Johnson) pour le deuxième conteneur (list)
@@ -42,10 +45,8 @@ void PmergeMe::mergeSortList()
 void PmergeMe::printUnsortedSequence() const 
 {
     std::cout << "Unsorted Sequence: ";
-    for (int num : sequence) 
-    {
-        std::cout << " " << num;
-    }
+    for (std::vector<int>::const_iterator it = sequence.begin(); it != sequence.end(); ++it) 
+        std::cout << " " << *it;
     std::cout << std::endl;
 }
 
@@ -53,20 +54,16 @@ void PmergeMe::printUnsortedSequence() const
 void PmergeMe::printSortedSequenceVector() const 
 {
     std::cout << "Sorted Sequence: ";
-    for (int num : sequence) 
-    {
-        std::cout << " " << num;
-    }
+    for (std::vector<int>::const_iterator it = sequence.begin(); it != sequence.end(); ++it) 
+        std::cout << " " << *it;
     std::cout << std::endl;
 }
 
 void PmergeMe::printSortedSequenceList() const 
 {
     std::cout << "Sorted Sequence (List):";
-    for (int num : sequenceList) 
-    {
-        std::cout << " " << num;
-    }
+    for (std::list<int>::const_iterator it = sequenceList.begin(); it != sequenceList.end(); ++it) 
+        std::cout << " " << *it;
     std::cout << std::endl;
 }
 
@@ -88,13 +85,13 @@ void PmergeMe::printTimeUsedList(clock_t startTime) const
     std::cout << "Time used for list: " << std::fixed << std::setprecision(2) << elapsedTimeMicros << " µs." << std::endl;
 }
 
-void PmergeMe::mergeSortVectorHelper(int left, int right) 
+template <typename Iterator>
+void PmergeMe::mergeSortVectorHelper(Iterator begin, Iterator end) 
 {
-     if (right - left > 1) {
-            size_t middle = left + (right - left) / 2;
-            mergeSortVectorHelper(left, middle);
-            mergeSortVectorHelper(middle, right);
-
-            std::inplace_merge(sequence.begin() + left, sequence.begin() + middle, sequence.begin() + right);
+     if (end - begin > 1) {
+            Iterator middle = begin + (end - begin) / 2;
+            mergeSortVectorHelper(begin, middle);
+            mergeSortVectorHelper(middle, end);
+            std::inplace_merge(begin, middle, end);
         }
 }

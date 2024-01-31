@@ -9,6 +9,8 @@
 #include <cstdlib>
 #include <cstring>
 #include <iomanip>
+#include <sstream>
+#include <stdlib.h>
 
 class PmergeMe
 {
@@ -39,10 +41,11 @@ class PmergeMe
         std::vector<int> sequence;
         std::list<int> sequenceList;
 
-        template<typename Container>
-        void printSequence(const Container& container) const;
+        //template<typename Container>
+        //void printSequence(const Container& container) const;
 
-        void mergeSortVectorHelper(int left, int right);
+        template <typename Iterator>
+        void mergeSortVectorHelper(Iterator begin, Iterator end);
 };
 
 #endif
